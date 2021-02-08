@@ -9,7 +9,7 @@ fi
 
 find ~/.user-setup/start-scripts -not -name ".bash_logout-old" -print0 | while read -d "" file; do 
     if ! [ -d "$file" ]; then
-        source $file
+        source "$file"
     fi
 done
 
