@@ -1,0 +1,18 @@
+#!/bin/bash
+
+SCRIPT_DIRECTORY="$(readlink -e $(dirname ${BASH_SOURCE[0]}))"
+HOME_DIRECTORY="$(readlink -e ~)"
+
+if ! [ "$HOME_DIRECTORY" = "$SCRIPT_DIRECTORY" ]; then
+    exit 0
+fi
+
+find ~/.user-setup/start-scripts -not -name ".bash_logout-old" -print0 | while read -d "" file; do 
+    if ! [ -d "$file" ]; then
+        source $file
+    fi
+done
+
+if [ -f ~/.user-setup/start-scripts/.bash_logout-old ]; then
+    source ~/.user-setup/start-scripts/.bash_logout-old
+fi

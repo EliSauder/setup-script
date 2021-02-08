@@ -1,0 +1,109 @@
+#!/bin/bash
+
+SCRIPT_DIRECTORY="$(readlink -e $(dirname ${BASH_SOURCE[0]}))"
+
+perform_uninstall() {
+    echo "Starting uninstall."
+
+    rm ~/.bashrc
+
+    if [ -f ~/.user-setup/start-scripts/.bashrc-old ]; then
+        mv ~/.user-setup/start-scripts/.bashrc-old ~/.bashrc
+    else
+        touch ~/.bashrc
+    fi
+
+    rm ~/.bash_logout
+
+    if [ -f ~/.user-setup/logout-scripts/.bash_logout-old ]; then
+        mv ~/.user-setup/logout-scripts/.bash_logout-old ~/.bash_logout
+    else
+        touch ~/.bash_logout
+    fi
+
+    rm ~/.bash_profile
+
+    if [ -f ~/.user-setup/bash-profile-scripts/.bash_profile-old ]; then
+        mv ~/.user-setup/bash-profile-scripts/.bash_profile-old ~/.bash_profile
+    else
+        touch ~/.bash_profile
+    fi
+
+    sudo rm -r ~/.user-setup
+
+    echo "Uninstall complete."
+}
+
+perform_install() {
+
+    echo "Starting install"
+    echo "Note: This will install its own copy of oh-my-bash. If you already have an installation it will not be used."
+
+    mkdir ~/.user-setup
+    mkdir ~/.user-setup/start-scripts
+    mkdir ~/.user-setup/logout-scripts
+    mkdir ~/.user-setup/bash-profile-scripts
+
+    touch ~/.user-setup/user-ssh-keys.txt
+
+    cp -a "${SCRIPT_DIRECTORY}/logout-scripts/." ~/.user-setup/logout-scripts
+    cp -a "${SCRIPT_DIRECTORY}/start-scripts/." ~/.user-setup/start-scripts
+    cp -a "${SCRIPT_DIRECTORY}/bash-profile-scripts/." ~/.user-setup/bash-profile-scripts
+
+    if [ -f ~/.bashrc ]; then
+        mv ~/.bashrc ~/.user-setup/start-scripts/.bashrc-old
+    fi
+
+    if [ -f ~/.bash_logout ]; then
+        mv ~/.bash_logout ~/.user-setup/logout-scripts/.bash_logout-old
+    fi
+
+    if [ -f ~/.bash_profile ]; then
+        mv ~/.bash_profile ~/.user-setup/bash-profile-scripts/.bash_profile-old
+    fi
+
+    cp "${SCRIPT_DIRECTORY}/templates/.bashrc.template" ~/.bashrc
+    cp "${SCRIPT_DIRECTORY}/templates/.bash_logout.template" ~/.bash_logout
+    cp "${SCRIPT_DIRECTORY}/templates/.bash_profile.template" ~/.bash_profile
+
+    git clone git://github.com/ohmybash/oh-my-bash.git ~/.user-setup/oh-my-bash
+    
+    cp "${SCRIPT_DIRECTORY}/templates/oh-my-bash.template" ~/.user-setup/start-scripts/oh-my-bash-config
+
+    source ~/.bash_profile
+    source ~/.bashrc
+
+    echo "Install complete"
+}
+
+perform_reinstall() {
+    perform_uninstall
+    perform_install
+}
+
+if [ -d ~/.user-setup ]; then
+
+    userInputFinished=false
+
+    while [ "$userInputFinished" = false ]; do
+
+        printf "Scripts are already installed, would you like to uninstall(u/U), reinstall(r/R), or exit(n/N)?\nNote: This will remove ~/.user-setup and attempt to restore .bashrc and .bash_logout: "
+        read userResponse
+
+        if [ "$userResponse" = "r" ] || [ "$userResponse" = "R" ]; then
+            perform_reinstall
+            userInputFinished=true
+        elif [ "$userResponse" = "u" ] || [ "$userResponse" = "U" ]; then
+            perform_uninstall
+            userInputFinished=true
+        elif [ "$userResponse" = "n" ] || [ "$userResponse" = "N" ]; then
+            userInputFinished=true
+            exit 0
+        else
+            printf "\nUnrecognized input.\n\n"
+        fi
+
+    done
+else
+    perform_install
+fi
