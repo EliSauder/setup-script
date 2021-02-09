@@ -49,10 +49,10 @@ perform_install() {
 
     touch ~/.user-setup/user-ssh-keys.txt
 
-    cp -a "${SCRIPT_DIRECTORY}/logout-scripts/." ~/.user-setup/logout-scripts
-    cp -a "${SCRIPT_DIRECTORY}/bashrc-scripts/." ~/.user-setup/bashrc-scripts
-    cp -a "${SCRIPT_DIRECTORY}/profile-scripts/." ~/.user-setup/profile-scripts
-    cp -a "${SCRIPT_DIRECTORY}/oh-my-bash-custom/." ~/.user-setup/oh-my-bash-custom
+    cp -a "${SCRIPT_DIRECTORY}/logout-scripts/" ~/.user-setup/logout-scripts
+    cp -a "${SCRIPT_DIRECTORY}/bashrc-scripts/" ~/.user-setup/bashrc-scripts
+    cp -a "${SCRIPT_DIRECTORY}/profile-scripts/" ~/.user-setup/profile-scripts
+    cp -a "${SCRIPT_DIRECTORY}/oh-my-bash-custom/" ~/.user-setup/oh-my-bash-custom
 
     if [ -f ~/.bashrc ]; then
         mv ~/.bashrc ~/.user-setup/bashrc-scripts/.bashrc-old
