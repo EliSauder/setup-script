@@ -7,14 +7,30 @@ if ! [ "$HOME_DIRECTORY" = "$SCRIPT_DIRECTORY" ]; then
     exit 0
 fi
 
-if [ -f ~/.user-setup/start-scripts/.bashrc-old ]; then
-    source ~/.user-setup/start-scripts/.bashrc-old
-fi
-
-find ~/.user-setup/start-scripts -not -name ".bashrc-old" -print0 | while read -d "" file; do 
+for file in $(find ~/.user-setup/bashrc-scripts -name "first-*"); do 
     if ! [ -d "$file" ]; then
-        source "$file"
+        . "$file"
     fi
 done
 
-source ~/.user-setup/start-scripts/aliases
+for file in $(find ~/.user-setup/bashrc-scripts -name "pre-*"); do 
+    if ! [ -d "$file" ]; then
+        . "$file"
+    fi
+done
+
+if [ -f ~/.user-setup/bashrc-scripts/.bashrc-old ]; then
+    . ~/.user-setup/bashrc-scripts/.bashrc-old
+fi
+
+for file in $(find ~/.user-setup/bashrc-scripts -name "post-*"); do 
+    if ! [ -d "$file" ]; then
+        . "$file"
+    fi
+done
+
+for file in $(find ~/.user-setup/bashrc-scripts -name "last-*"); do 
+    if ! [ -d "$file" ]; then
+        . "$file"
+    fi
+done

@@ -7,8 +7,8 @@ perform_uninstall() {
 
     rm ~/.bashrc
 
-    if [ -f ~/.user-setup/start-scripts/.bashrc-old ]; then
-        mv ~/.user-setup/start-scripts/.bashrc-old ~/.bashrc
+    if [ -f ~/.user-setup/bashrc-scripts/.bashrc-old ]; then
+        mv ~/.user-setup/bashrc-scripts/.bashrc-old ~/.bashrc
     else
         touch ~/.bashrc
     fi
@@ -21,15 +21,17 @@ perform_uninstall() {
         touch ~/.bash_logout
     fi
 
-    rm ~/.bash_profile
+    rm ~/.profile
 
-    if [ -f ~/.user-setup/bash-profile-scripts/.bash_profile-old ]; then
-        mv ~/.user-setup/bash-profile-scripts/.bash_profile-old ~/.bash_profile
+    if [ -f ~/.user-setup/profile-scripts/.profile-old ]; then
+        mv ~/.user-setup/profile-scripts/.profile-old ~/.profile
     else
-        touch ~/.bash_profile
+        touch ~/.profile
     fi
 
     sudo rm -r ~/.user-setup
+
+    source ~/.profile
 
     echo "Uninstall complete."
 }
@@ -40,18 +42,18 @@ perform_install() {
     echo "Note: This will install its own copy of oh-my-bash. If you already have an installation it will not be used."
 
     mkdir ~/.user-setup
-    mkdir ~/.user-setup/start-scripts
+    mkdir ~/.user-setup/bashrc-scripts
     mkdir ~/.user-setup/logout-scripts
-    mkdir ~/.user-setup/bash-profile-scripts
+    mkdir ~/.user-setup/profile-scripts
 
     touch ~/.user-setup/user-ssh-keys.txt
 
     cp -a "${SCRIPT_DIRECTORY}/logout-scripts/." ~/.user-setup/logout-scripts
-    cp -a "${SCRIPT_DIRECTORY}/start-scripts/." ~/.user-setup/start-scripts
-    cp -a "${SCRIPT_DIRECTORY}/bash-profile-scripts/." ~/.user-setup/bash-profile-scripts
+    cp -a "${SCRIPT_DIRECTORY}/bashrc-scripts/." ~/.user-setup/bashrc-scripts
+    cp -a "${SCRIPT_DIRECTORY}/profile-scripts/." ~/.user-setup/profile-scripts
 
     if [ -f ~/.bashrc ]; then
-        mv ~/.bashrc ~/.user-setup/start-scripts/.bashrc-old
+        mv ~/.bashrc ~/.user-setup/bashrc-scripts/.bashrc-old
     fi
 
     if [ -f ~/.bash_logout ]; then
@@ -59,19 +61,20 @@ perform_install() {
     fi
 
     if [ -f ~/.bash_profile ]; then
-        mv ~/.bash_profile ~/.user-setup/bash-profile-scripts/.bash_profile-old
+        mv ~/.bash_profile ~/.bash_profile.bak
+    fi
+
+    if [ -f ~/.profile ]; then
+        mv ~/.profile ~/.user-setup/profile-scripts/.profile-old
     fi
 
     cp "${SCRIPT_DIRECTORY}/templates/.bashrc.template" ~/.bashrc
     cp "${SCRIPT_DIRECTORY}/templates/.bash_logout.template" ~/.bash_logout
-    cp "${SCRIPT_DIRECTORY}/templates/.bash_profile.template" ~/.bash_profile
+    cp "${SCRIPT_DIRECTORY}/templates/.profile.template" ~/.profile
 
     git clone git://github.com/ohmybash/oh-my-bash.git ~/.user-setup/oh-my-bash
-    
-    cp "${SCRIPT_DIRECTORY}/templates/oh-my-bash.template" ~/.user-setup/start-scripts/oh-my-bash-config
 
-    source ~/.bash_profile
-    source ~/.bashrc
+    source ~/.profile
 
     echo "Install complete"
 }

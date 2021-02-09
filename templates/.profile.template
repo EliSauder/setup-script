@@ -1,0 +1,36 @@
+#!/bin/bash
+
+SCRIPT_DIRECTORY="$(readlink -e $(dirname ${BASH_SOURCE[0]}))"
+HOME_DIRECTORY="$(readlink -e "$HOME")"
+
+if ! [ "$HOME_DIRECTORY" = "$SCRIPT_DIRECTORY" ]; then
+    exit 0
+fi
+
+for file in $(find ~/.user-setup/profile-scripts -name "first-*"); do 
+    if ! [ -d "$file" ]; then
+        . "$file"
+    fi
+done
+
+for file in $(find ~/.user-setup/profile-scripts -name "pre-*"); do 
+    if ! [ -d "$file" ]; then
+        . "$file"
+    fi
+done
+
+if [ -f "$HOME/.user-setup/profile-scripts/.profile-old" ]; then
+    . "$HOME/.user-setup/profile-scripts/.profile-old"
+fi
+
+for file in $(find ~/.user-setup/profile-scripts -name "post-*"); do 
+    if ! [ -d "$file" ]; then
+        . "$file"
+    fi
+done
+
+for file in $(find ~/.user-setup/profile-scripts -name "last-*"); do 
+    if ! [ -d "$file" ]; then
+        . "$file"
+    fi
+done
