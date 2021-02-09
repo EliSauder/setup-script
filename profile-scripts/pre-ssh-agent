@@ -2,23 +2,38 @@
 
 SSH_ENV="$HOME/.ssh/agent-environment"
 
-function start_agent {
-    echo "Starting new SSH Agent..."
+if ! [ -d $(dirname ${SSH_ENV}) ]; then
+    echo ".ssh folder does not exist, creating it."
+    mkdir "$HOME/.ssh"
+fi
 
-    ssh-agent | sed 's/^echo/#echo/' > "${SSH_ENV}"
-    chmod 600 "${SSH_ENV}"
-    . "${SSH_ENV}" > /dev/null 2>&1
-    ssh-add;
+function start_agent {
+
+    createNewAgent=false
+
+    if [ -f "${SSH_ENV}" ]; then
+        . "${SSH_ENV}" > /dev/null 2>&1
+        
+        #ps ${SSH_AGENT_PID} doesn't work under cywgin
+        
+        ps -ef | grep ${SSH_AGENT_PID} | grep ssh-agent$ > /dev/null 2>&1 || {
+            createNewAgent=true;
+            start_agent;
+        }
+    else
+        createNewAgent=true;
+    fi
+
+    if [ $createNewAgent = true ]; then
+
+        echo "Starting new SSH Agent..."
+
+        ssh-agent | sed 's/^echo/#echo/' > "${SSH_ENV}"
+        chmod 600 "${SSH_ENV}"
+        . "${SSH_ENV}" > /dev/null 2>&1
+        ssh-add;
+    fi
 }
 
-# Source SSH settings, if applicable
+start_agent
 
-if [ -f "${SSH_ENV}" ]; then
-    . "${SSH_ENV}" > /dev/null 2>&1
-    #ps ${SSH_AGENT_PID} doesn't work under cywgin
-    ps -ef | grep ${SSH_AGENT_PID} | grep ssh-agent$ > /dev/null 2>&1 || {
-        start_agent;
-    }
-else
-    start_agent;
-fi
