@@ -1,0 +1,181 @@
+#!/bin/bash
+
+sshAlgorithms=("rsa" "ed25519")
+sshKeySizes=('keySizes=(1024 2048 4096)' 'keySizes=()')
+
+EMAIL_REGEX="^[a-z0-9!#\$%&'*+/=?^_\`{|}~-]+(\.[a-z0-9!#$%&'*+/=?^_\`{|}~-]+)*@([a-z0-9]([a-z0-9-]*[a-z0-9])?\.)+[a-z0-9]([a-z0-9-]*[a-z0-9])?\$"
+NUMBER_REGEX='^[0-9]+$'
+
+args=("$@")
+
+displayKeyWhenDone=false
+
+counter=0
+for arg in "$@"; do
+    if [ "$arg" = "-e" ]; then
+        emailArgument=$(($counter + 1))
+    elif [ "$arg" = "-d" ]; then
+        displayKeyWhenDone=true
+    elif [ "$arg" = "-a" ]; then
+        algorithmArgument=$(($counter + 1))
+    elif [ "$arg" = "-k" ]; then
+        keySizeArgument=$(($counter + 1))
+    fi
+    counter=$(($counter + 1))
+done
+
+if ! [ -z "$emailArgument" ]; then
+
+    if [ -z ${args[$emailArgument]} ]; then
+        echo "-e is specified but no email is provided."
+        exit 1
+    else
+        if ! [[ ${args[$emailArgument]} =~ $EMAIL_REGEX ]]; then
+            echo "Email provided is not valid."
+            exit 1
+        else
+            selectedEmail=${args[$emailArgument]}
+        fi
+    fi
+fi
+
+if ! [ -z "$algorithmArgument" ]; then
+
+    if [ -z ${args[$algorithmArgument]} ]; then
+        echo "-a is specified but no algorithm is provided."
+        exit 1
+    fi
+
+    if [[ ! " ${sshAlgorithms[@]} " =~ " ${args[$algorithmArgument]} " ]]; then
+        echo "Algorithm provided (${args[$algorithmArgument]}) is not suppored."
+        exit 1
+    fi
+
+    for i in "${!sshAlgorithms[@]}"; do
+        if [ "${sshAlgorithms[$i]}" = "${args[$algorithmArgument]}" ]; then
+            selectedAlgorithm=$(($i + 1))
+        fi
+    done
+fi
+
+if ! [ -z "$keySizeArgument" ]; then
+
+    if [ -z "${args[$keySizeArgument]}" ]; then
+        echo "-k is specified but no key size is provided."
+        exit 1
+    fi
+
+    if [ -z "$selectedAlgorithm" ]; then
+        echo "-a must be specified when using -k."
+        exit 1
+    fi
+
+    eval ${sshKeySizes[$(($selectedAlgorithm - 1))]}
+
+    if ! [ "${#keySizes[@]}" = 0 ]; then
+        if [[ ! " ${keySizes[@]} " =~ " ${args[$keySizeArgument]} " ]]; then
+            echo "Keysize provided (${args[$keySizeArgument]}) is not suppored."
+            exit 1
+        fi
+
+        for i in "${!keySizes[@]}"; do
+            if [ "${keySizes[$i]}" = "${args[$keySizeArgument]}" ]; then
+                selectedKeySize=$(($i + 1))
+            fi
+        done
+    fi
+fi
+
+if [ -z $selectedEmail ]; then
+
+    userInputFinished=false
+
+    while [ "$userInputFinished" = false ]; do
+
+        printf "Please enter email for ssh-key: "
+        read selectedEmail
+
+        if [ -z "$selectedEmail" ]; then
+            printf "\nEmail cannot be blank \n\n"
+        elif ! [[ $selectedEmail =~ $EMAIL_REGEX ]]; then
+            printf "\nEmail provided is invalid.\n\n"
+        else
+            userInputFinished=true
+        fi
+
+    done
+fi
+
+if [ -z "$selectedAlgorithm" ]; then
+
+    printf "Supported algorithms: \n"
+    for i in "${!sshAlgorithms[@]}"; do
+        printf " - (%d) %s\n" "$(($i + 1))" "${sshAlgorithms[$i]}"
+    done
+
+    userInputFinished=false
+
+    while [ "$userInputFinished" = false ]; do
+
+        printf "Enter desired ssh algorithm (1-${#sshAlgorithms[@]}): "
+        read selectedAlgorithm
+
+        if ! [[ $selectedAlgorithm =~ $NUMBER_REGEX ]]; then
+            printf "\nPlease enter a number.\n\n"
+        else
+            if [ $(($selectedAlgorithm)) \> ${#sshAlgorithms[@]} ]; then
+                printf "\nPlease enter a number <= ${#sshAlgorithms[@]}\n\n"
+            elif [ $(($selectedAlgorithm)) \< 1 ]; then
+                printf "\nPlease enter a number >= 1\n\n"
+            else
+                userInputFinished=true
+            fi
+        fi
+    done
+fi
+
+#selectedAlgorithm=$(($selectedAlgorithm - 1))
+
+if [ -z "$selectedKeySize" ]; then
+
+    eval ${sshKeySizes[$(($selectedAlgorithm - 1))]}
+
+    if ! [ "${#keySizes[@]}" = 0 ]; then
+
+        printf "Supported key sizes:\n"
+        for i in "${!keySizes[@]}"; do
+            printf " - (%d) %s\n" "$(($i + 1))" "${keySizes[$i]}"
+        done
+
+        userInputFinished=false
+
+        while [ "$userInputFinished" = false ]; do
+            printf "Select desired key size (1-${#keySizes[@]}): "
+            read selectedKeySize
+
+            if ! [[ $selectedKeySize =~ $NUMBER_REGEX ]]; then
+                printf "\nPlease enter a number.\n\n"
+            else
+                if [ $(($selectedKeySize)) \> ${#keySizes[@]} ]; then
+                    printf "\nPlease enter a number <= ${#keySizes[@]}\n\n"
+                elif [ $(($selectedKeySize)) \< 1 ]; then
+                    printf "\nPlease enter a number >= 1\n\n"
+                else
+                    userInputFinished=true
+                fi
+            fi
+        done
+    fi
+fi
+
+if ! [ -z $selectedKeySize ]; then
+    selectedKeySize=${keySizes[$(($selectedKeySize - 1))]}
+fi
+
+selectedAlgorithm=${sshAlgorithms[$(($selectedAlgorithm - 1))]}
+
+if [ -z $selectedKeySize ]; then
+    ssh-keygen -t "$selectedAlgorithm" -C "$selectedEmail"
+else
+    ssh-keygen -t "$selectedAlgorithm" -b "$selectedKeySize" -C "$selectedEmail"
+fi

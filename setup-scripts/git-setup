@@ -72,14 +72,18 @@ if [ "$setupSSH" = "y" ] || [ "$setupSSH" = "Y" ]; then
                 printf "\nPlease enter a number.\n\n"
             else 
                 if [ $(($keyToUse)) \> ${#listOfPossibleKeys[@]} ]; then
-                    printf "\nPlease enter a number <= ${#listOfPossibleKeys[@]}"
+                    printf "\nPlease enter a number <= ${#listOfPossibleKeys[@]}\n\n"
                 elif [ $(($keyToUse)) \< 1 ]; then
-                    printf "\nPlease enter a number >= 1"
+                    printf "\nPlease enter a number >= 1\n\n"
                 fi
             fi
 
         done
+    fi
 
+    if [ -z "$keyToUse" ]; then
+        SCRIPT_DIRECTORY="$(readlink -e $(dirname ${BASH_SOURCE[0]}))"
+        "${SCRIPT_DIRECTORY}/ssh-setup" -e "$gitEmail" -d -a ed25519
     fi
 
 fi
