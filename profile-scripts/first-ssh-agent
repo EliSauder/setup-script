@@ -1,6 +1,6 @@
 #!/bin/bash
 
-SSH_ENV="$HOME/.ssh/agent-environment"
+SSH_ENV="$HOME/.ssh/.agent-environment"
 
 if ! [ -d $(dirname ${SSH_ENV}) ]; then
     echo ".ssh folder does not exist, creating it."

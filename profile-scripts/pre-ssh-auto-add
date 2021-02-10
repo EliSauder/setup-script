@@ -1,0 +1,7 @@
+#!/bin/bash
+
+lines=$(cat ~/.user-setup/user-ssh-keys.txt)
+
+for line in $lines; do
+    ssh-add $line
+done

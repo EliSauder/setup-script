@@ -1,6 +1,5 @@
 #!/bin/bash
-
-EMAIL_REGEX="^[a-z0-9!#\$%&'*+/=?^_\`{|}~-]+(\.[a-z0-9!#$%&'*+/=?^_\`{|}~-]+)*@([a-z0-9]([a-z0-9-]*[a-z0-9])?\.)+[a-z0-9]([a-z0-9-]*[a-z0-9])?\$"
+EMAIL_REGEX="^(([A-Za-z0-9]+((\.|\-|\_|\+)?[A-Za-z0-9]?)*[A-Za-z0-9]+)|[A-Za-z0-9]+)@(([A-Za-z0-9]+)+((\.|\-|\_)?([A-Za-z0-9]+)+)*)+\.([A-Za-z]{2,})+$"
 NUMBER_REGEX='^[0-9]+$'
 
 userInputFinished=false
@@ -83,7 +82,7 @@ if [ "$setupSSH" = "y" ] || [ "$setupSSH" = "Y" ]; then
 
     if [ -z "$keyToUse" ]; then
         SCRIPT_DIRECTORY="$(readlink -e $(dirname ${BASH_SOURCE[0]}))"
-        "${SCRIPT_DIRECTORY}/ssh-setup" -e "$gitEmail" -d -a ed25519
+        "${SCRIPT_DIRECTORY}/ssh-setup" -e "$gitEmail" -d -a ed25519 -f ~/.ssh/github_ed25519
     fi
 
 fi

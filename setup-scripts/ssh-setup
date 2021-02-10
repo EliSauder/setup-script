@@ -3,7 +3,7 @@
 sshAlgorithms=("rsa" "ed25519")
 sshKeySizes=('keySizes=(1024 2048 4096)' 'keySizes=()')
 
-EMAIL_REGEX="^[a-z0-9!#\$%&'*+/=?^_\`{|}~-]+(\.[a-z0-9!#$%&'*+/=?^_\`{|}~-]+)*@([a-z0-9]([a-z0-9-]*[a-z0-9])?\.)+[a-z0-9]([a-z0-9-]*[a-z0-9])?\$"
+EMAIL_REGEX="^(([A-Za-z0-9]+((\.|\-|\_|\+)?[A-Za-z0-9]?)*[A-Za-z0-9]+)|[A-Za-z0-9]+)@(([A-Za-z0-9]+)+((\.|\-|\_)?([A-Za-z0-9]+)+)*)+\.([A-Za-z]{2,})+$"
 NUMBER_REGEX='^[0-9]+$'
 
 args=("$@")
@@ -272,7 +272,13 @@ if ! [ "$(readlink -f $selectedFile)" = "$HOME/.ssh/id_$selectedAlgorithm" ]; th
 
     if [ "$autoAddtoAgent" = "y" ] || [ "$autoAddtoAgent" = "Y" ]; then
         grep -qxF "$(readlink -f $selectedFile)" ~/.user-setup/user-ssh-keys.txt || echo "$(readlink -f $selectedFile)" >> ~/.user-setup/user-ssh-keys.txt
+        ssh-add "$(readlink -f $selectedFile)"
     else
         echo "The key will not be added automatically."
     fi
+fi
+
+if [ "$displayKeyWhenDone" = true ]; then
+    echo "This is the public key you can provide to servers and such:"
+    cat "$(readlink -f $selectedFile).pub"
 fi
