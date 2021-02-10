@@ -9,6 +9,7 @@ NUMBER_REGEX='^[0-9]+$'
 args=("$@")
 
 displayKeyWhenDone=false
+replaceSSHKey=false
 
 counter=0
 for arg in "$@"; do
@@ -16,10 +17,14 @@ for arg in "$@"; do
         emailArgument=$(($counter + 1))
     elif [ "$arg" = "-d" ]; then
         displayKeyWhenDone=true
+    elif [ "$arg" = "-r" ]; then
+        replaceSSHKey=true
     elif [ "$arg" = "-a" ]; then
         algorithmArgument=$(($counter + 1))
     elif [ "$arg" = "-k" ]; then
         keySizeArgument=$(($counter + 1))
+    elif [ "$arg" = "-f" ]; then
+        fileArgument=$(($counter + 1))
     fi
     counter=$(($counter + 1))
 done
@@ -84,6 +89,29 @@ if ! [ -z "$keySizeArgument" ]; then
             fi
         done
     fi
+fi
+
+if ! [ -z "$fileArgument" ]; then
+    if [ -z "${args[$fileArgument]}" ]; then
+        echo "-f is specified but no file is provided."
+        exit 1
+    fi
+
+    if [ -d $(dirname $(readlink -f $fileArgument)) ]; then
+        if [ -d $(readlink -f $fileArgument) ]; then
+            echo "$(readlink -f $fileArgument) is a directory, please specify a file."
+            exit 1
+        fi
+
+        if [ -f $(readlink -f $fileArgument) ]; then
+            if [ "$replaceSSHKey" = false ]; then
+                echo "$(readlink -f $fileArgument) already exists. To replace it run the command with -f"
+                exit 1
+            fi
+        fi
+    fi
+
+    selectedFile=${args[$fileArgument]}
 fi
 
 if [ -z $selectedEmail ]; then
@@ -171,11 +199,80 @@ fi
 if ! [ -z $selectedKeySize ]; then
     selectedKeySize=${keySizes[$(($selectedKeySize - 1))]}
 fi
-
 selectedAlgorithm=${sshAlgorithms[$(($selectedAlgorithm - 1))]}
 
+if [ -z "$selectedFile" ]; then
+
+    userInputFinished=false
+
+    while [ "$userInputFinished" = false ]; do
+
+        printf "Enter file for ssh key (default: $HOME/.ssh/id_$selectedAlgorithm): "
+        read selectedFile
+
+        if [ -z "$selectedFile" ]; then
+            selectedFile="$HOME/.ssh/id_$selectedAlgorithm"
+        else
+            eval selectedFile=$selectedFile
+        fi
+
+        if [ -d $(dirname "$(readlink -f $selectedFile)") ]; then
+            if [ -d $(readlink -f $selectedFile) ]; then
+                printf "\n$(readlink -f $selectedFile) is a directory, please specify a file.\n\n"
+                continue
+            fi
+
+            if [ -f $(readlink -f $selectedFile) ] && [ "$replaceSSHKey" = false ]; then
+                subUserInputFinished=false
+                while [ "$subUserInputFinished" = false ]; do
+                    printf "File $(readlink -f $selectedFile) already exists, would you like to replace it (y/n)? "
+                    read replaceFile
+
+                    if [ "$replaceFile" = "y" ] || [ "$replaceFile" = "Y" ]; then
+                        rm "$(readlink -f $selectedFile)"
+                        rm "$(readlink -f $selectedFile).pub"
+                        subUserInputFinished=true
+                        userInputFinished=true
+                    elif [ "$replaceFile" = "n" ] || [ "$replaceFile" = "N" ]; then
+                        subUserInputFinished=true
+                    else
+                        printf "\nUnrecognized input\n\n"
+                    fi
+                done
+
+                if [ "$replaceFile" = "n" ] || [ "$replaceFile" = "N" ]; then
+                    continue
+                fi
+            fi
+        fi
+
+        if ! [ "$(readlink -f $selectedFile)" = "$HOME/.ssh/id_$selectedAlgorithm" ]; then
+            printf "You have selected $(readlink -f $selectedFile), is that correct (y/n)? "
+            read isFileCorrect
+
+            if [ "$isFileCorrect" = "y" ] || [ "$isFileCorrect" = "Y" ]; then
+                userInputFinished=true
+            fi
+        else
+            userInputFinished=true
+        fi
+    done
+fi
+
 if [ -z $selectedKeySize ]; then
-    ssh-keygen -t "$selectedAlgorithm" -C "$selectedEmail"
+    ssh-keygen -t "$selectedAlgorithm" -C "$selectedEmail" -f "$(readlink -f "$selectedFile")"
 else
-    ssh-keygen -t "$selectedAlgorithm" -b "$selectedKeySize" -C "$selectedEmail"
+    ssh-keygen -t "$selectedAlgorithm" -b "$selectedKeySize" -C "$selectedEmail" -f "$(readlink -f "$selectedFile")"
+fi
+
+if ! [ "$(readlink -f $selectedFile)" = "$HOME/.ssh/id_$selectedAlgorithm" ]; then
+
+    echo "Would you like to have this automatically added to ssh-agent (y/n)?"
+    read autoAddtoAgent
+
+    if [ "$autoAddtoAgent" = "y" ] || [ "$autoAddtoAgent" = "Y" ]; then
+        grep -qxF "$(readlink -f $selectedFile)" ~/.user-setup/user-ssh-keys.txt || echo "$(readlink -f $selectedFile)" >> ~/.user-setup/user-ssh-keys.txt
+    else
+        echo "The key will not be added automatically."
+    fi
 fi
