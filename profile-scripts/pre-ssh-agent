@@ -18,7 +18,6 @@ function start_agent {
         
         ps -ef | grep ${SSH_AGENT_PID} | grep ssh-agent$ > /dev/null 2>&1 || {
             createNewAgent=true;
-            start_agent;
         }
     else
         createNewAgent=true;
