@@ -41,6 +41,8 @@ perform_uninstall() {
         fi
     fi
 
+    rm "$HOME/.mytheme.omp.json"
+
     echo "Finished uninstall"
 }
 
@@ -54,6 +56,8 @@ perform_install() {
     fi
 
     hash -r
+
+    cp "$SCRIPT_DIRECTORI/.mytheme.omp.json" "$HOME"
 
     mkdir "$HOME/.old_scripts"
 
