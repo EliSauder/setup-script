@@ -2,7 +2,7 @@
 
 SSH_ENV="$HOME/.ssh/.agent-environment"
 
-if ! [ -d $(dirname ${SSH_ENV}) ]; then
+if ! [ -d "$(dirname "${SSH_ENV}")" ]; then
     echo ".ssh folder does not exist, creating it."
     mkdir "$HOME/.ssh"
 fi
@@ -15,10 +15,14 @@ function start_agent {
         . "${SSH_ENV}" > /dev/null 2>&1
         
         #ps ${SSH_AGENT_PID} doesn't work under cywgin
-        
-        ps -ef | grep ${SSH_AGENT_PID} | grep ssh-agent$ > /dev/null 2>&1 || {
+      
+        pgrep ssh-agent | grep "${SSH_AGENT_PID}" > /dev/null 2>&1 || {
             createNewAgent=true;
         }
+
+        #ps -ef | grep "${SSH_AGENT_PID}" | grep ssh-agent$ > /dev/null 2>&1 || {
+        #    createNewAgent=true;
+        #}
     else
         createNewAgent=true;
     fi

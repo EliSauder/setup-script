@@ -1,0 +1,56 @@
+#!/bin/bash
+
+# Check for brew package manager
+which -s brew
+
+if ! which -s brew ; then
+# install homebrew
+    /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
+else 
+    brew update
+fi
+
+# Install Packages
+brew install jandedobbeleer/oh-my-posh/oh-my-posh
+brew install llvm
+brew install bash-language-server
+brew install clang-format
+brew install node
+brew install gcc
+brew install rustup
+brew install docker
+brew install visual-studio-code
+brew install lua
+brew install lua-language-server
+brew install luajit
+brew install cppcheck
+brew install cpplint
+brew install ccls
+brew install boost
+brew install git
+brew install gh
+brew install googletest
+brew install openssl
+brew install readline
+brew install shellcheck
+brew install tmux
+brew install tree-sitter
+brew install wget
+brew install zsh
+brew install zsh-autosuggestions
+brew install zsh-completions
+brew install zsh-history-substring-search
+brew install zsh-syntax-highlighting
+brew install zsh-you-should-use
+brew install zstd
+brew install tree
+brew install openjdk
+brew install neovim
+
+# Configure Packages
+npm install --save-dev @commitlint/{cli,config-conventional}
+
+oh-my-posh install font CascadiaCode
+
+rustup update
+

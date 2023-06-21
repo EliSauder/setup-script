@@ -1,84 +1,144 @@
 #!/bin/bash
 
-SCRIPT_DIRECTORY="$(readlink -e $(dirname ${BASH_SOURCE[0]}))"
+detect_shell() {
+    if [ -n "${ZSH_VERSION}" ]; then
+        echo "zsh"
+    elif [ -n "${BASH_VERSION}" ]; then
+        echo "bash"
+    elif [ -n "${FISH_VERSION}" ]; then
+        echo "fish"
+    else
+        echo "<unknown>"
+    fi
+}
+
+SCRIPT_DIRECTORY="$(readlink -e "$(dirname "${BASH_SOURCE[0]}")")"
 
 perform_uninstall() {
-    echo "Starting uninstall."
+    echo "Starting uninstall"
 
-    rm ~/.bashrc
+    if [[ $(detect_shell) == "zsh" ]]; then
+        rm "$HOME/.zprofile"
+        rm "$HOME/.zlogout"
+        rm "$HOME/.zshrc"
+        rm "$HOME/.zshenv"
 
-    if [ -f ~/.user-setup/bashrc-scripts/.bashrc-old ]; then
-        mv ~/.user-setup/bashrc-scripts/.bashrc-old ~/.bashrc
-    else
-        touch ~/.bashrc
+        cp "$HOME/.old_scripts/z*" "$HOME"
+        find "$HOME/.old_scripts" -name "z*" -mindepth 1 -delete
+        if [ -z "$(ls -A "$HOME/.old_scripts")" ]; then
+            rm -r "$HOME/.old_scripts"
+        fi
+    elif [[ $(detect_shell) == "bash" ]]; then
+        rm "$HOME/.bashrc"
+        rm "$HOME/.bash_profile"
+        rm "$HOME/.bash_logout"
+        rm "$HOME/.profile"
+
+        cp "$HOME/.old_scripts/bash*" "$HOME" && cp "$HOME/.old_scripts/.profile" "$HOME"
+        find "$HOME/.old_scripts" -name "bash*" -mindepth 1 -delete
+        if [ -z "$(ls -A "$HOME/.old_scripts")" ]; then
+            rm -r "$HOME/.old_scripts"
+        fi
     fi
 
-    rm ~/.bash_logout
-
-    if [ -f ~/.user-setup/logout-scripts/.bash_logout-old ]; then
-        mv ~/.user-setup/logout-scripts/.bash_logout-old ~/.bash_logout
-    else
-        touch ~/.bash_logout
-    fi
-
-    rm ~/.profile
-
-    if [ -f ~/.user-setup/profile-scripts/.profile-old ]; then
-        mv ~/.user-setup/profile-scripts/.profile-old ~/.profile
-    else
-        touch ~/.profile
-    fi
-
-    sudo rm -r ~/.user-setup
-
-    source ~/.profile
-
-    echo "Uninstall complete."
+    echo "Finished uninstall"
 }
 
 perform_install() {
-
     echo "Starting install"
-    echo "Note: This will install its own copy of oh-my-bash. If you already have an installation it will not be used."
 
-    mkdir ~/.user-setup
-    mkdir ~/.user-setup/bashrc-scripts
-    mkdir ~/.user-setup/logout-scripts
-    mkdir ~/.user-setup/profile-scripts
-    mkdir ~/.user-setup/oh-my-bash-custom
-
-    touch ~/.user-setup/user-ssh-keys.txt
-
-    cp -a "${SCRIPT_DIRECTORY}/logout-scripts/." ~/.user-setup/logout-scripts
-    cp -a "${SCRIPT_DIRECTORY}/bashrc-scripts/." ~/.user-setup/bashrc-scripts
-    cp -a "${SCRIPT_DIRECTORY}/profile-scripts/." ~/.user-setup/profile-scripts
-    cp -a "${SCRIPT_DIRECTORY}/oh-my-bash-custom/." ~/.user-setup/oh-my-bash-custom
-
-    if [ -f ~/.bashrc ]; then
-        mv ~/.bashrc ~/.user-setup/bashrc-scripts/.bashrc-old
+    if [[ $OSTYPE == "darwin" ]] ; then
+        source ./preinstall/mac
+    elif [[ $OSTYPE == "linux-gnu" ]] ; then
+        source ./preinstall/linux
     fi
 
-    if [ -f ~/.bash_logout ]; then
-        mv ~/.bash_logout ~/.user-setup/logout-scripts/.bash_logout-old
+    hash -r
+
+    #    mkdir "$HOME/.user-setup"
+    #    mkdir "$HOME/.user-setup/scripts"
+    #
+    #    touch "$HOME/.user-setup/user-ssh-keys.txt"
+    #
+    #    find "$SCRIPT_DIRECTORY/user_scripts/" \
+        #        \(-iname -not "*_zsh*" -and -iname -not "*_bash*" \
+        #        -and -iname -not "*_fish*" -and -iname -not "*_csh*" \) \
+        #        | xargs -0 -I {} cp {} "$HOME/.user-setup/scripts"
+
+    mkdir "$HOME/.old_scripts"
+
+    if [[ $(detect_shell) == "zsh" ]]; then
+        mv "$HOME/.zshenv" "$HOME/.old_scripts/.zshenv" \
+            && echo "source \"$HOME/.old_scripts/.zshenv\"" > "$HOME/.zshenv"
+        mv "$HOME/.zprofile" "$HOME/.old_scripts/.zprofile" \
+            && echo "source \"$HOME/.old_scripts/.zprofile\"" > "$HOME/.zprofile"
+        mv "$HOME/.zshrc" "$HOME/.old_scripts/.zshrc" \
+            && echo "source \"$HOME/.old_scripts/.zshrc\"" > "$HOME/.zshrc"
+        mv "$HOME/.zlogout" "$HOME/.old_scripts/.zlogout" \
+            && echo "source \"$HOME/.old_scripts/.zlogout\"" > "$HOME/.zlogout"
+
+        mv "$HOME/.zlogin" "$HOME/.old_scripts/.zlogin"
+        if [ ! -f "$HOME/.zprofile" ] && [ -f "$HOME/.old_scripts/.zlogin" ]; then
+            echo "source \"$HOME/.old_scripts/.zlogin\"" > "$HOME/.zprofile"
+        fi
+
+        touch "$HOME/.zshenv"
+        touch "$HOME/.zprofile"
+        touch "$HOME/.zshrc"
+        touch "$HOME/.zlogout"
+
+        echo "source \"$SCRIPT_DIRECTORY/sys_scripts/env_zsh\"" >> "$HOME/.zshenv"
+        echo "source \"$SCRIPT_DIRECTORY/sys_scripts/login_zsh\"" >> "$HOME/.zprofile"
+        echo "source \"$SCRIPT_DIRECTORY/sys_scripts/interactive_zsh\"" >> "$HOME/.zshrc"
+        echo "source \"$SCRIPT_DIRECTORY/sys_scripts/logout_zsh\"" >> "$HOME/.zlogout"
+
+    elif [[ $(detect_shell) == "bash" ]]; then
+        mv "$HOME/.bash_profile" "$HOME/.old_scripts/.bash_profile" \
+            && echo "source \"$HOME/.old_scripts/.bash_profile\"" > "$HOME/.bash_profile"
+        mv "$HOME/.bashrc" "$HOME/.old_scripts/.bashrc" \
+            && echo "source \"$HOME/.old_scripts/.bashrc\"" > "$HOME/.bashrc"
+        mv "$HOME/.profile" "$HOME/.old_scripts/.profile" \
+            && echo "source $HOME/.old_scripts/.profile"
+        mv "$HOME/.bash_logout" "$HOME/.old_scripts/.bash_logout" \
+            && echo "source \"$HOME/.old_scripts/.bash_logout\"" > "$HOME/.bash_logout"
+
+        mv "$HOME/.bash_login" "$HOME/.old_scripts/.bash_login"
+        if [ ! -f "$HOME/.bash_profile" ] && [ -f "$HOME/.old_scripts/.bash_login" ]; then
+            echo "source \"$HOME/.old_scripts/.bash_login\"" > "$HOME/.bash_profile"
+        fi
+
+        touch "$HOME/.bash_profile"
+        touch "$HOME/.bashrc"
+        touch "$HOME/.bash_logout"
+        touch "$HOME/.profile"
+
+        {
+            echo "if [[ -n \$USERSCRIPTS_ENV_LOADED ]] || [[ \$USERSCRIPTS_ENV_LOADED == 0 ]]; then"
+            echo "    source \"$SCRIPT_DIRECTORY/sys_scripts/env_bash\""
+            echo "    USERSCRIPTS_ENV_LOADED=1"
+            echo "fi"
+        } >> "$HOME/.bash_profile"
+        {
+            echo "if [[ -n \$USERSCRIPTS_ENV_LOADED ]] || [[ \$USERSCRIPTS_ENV_LOADED == 0 ]]; then"
+            echo "    source \"$SCRIPT_DIRECTORY/sys_scripts/env_bash\""
+            echo "    USERSCRIPTS_ENV_LOADED=1"
+            echo "fi"
+        } >> "$HOME/.bashrc"
+
+        echo "source \"$SCRIPT_DIRECTORY/sys_scripts/login_bash\"" >> "$HOME/.bash_profile"
+        echo "source \"$SCRIPT_DIRECTORY/sys_scripts/interactive_bash\"" >> "$HOME/.bashrc"
+
+        echo "source \"$SCRIPT_DIRECTORY/sys_scripts/profile_bash\"" >> "$HOME/.profile"
+        echo "source \"$SCRIPT_DIRECTORY/sys_scripts/logout_bash\"" >> "$HOME/.bash_logout"
+
+    elif [[ $(detect_shell) == "fish" ]]; then
+        echo "Unsupported"
+        # TODO: Handle startup scripts
+    elif [[ $(detect_shell) == "csh" ]]; then
+        echo "Unsopported"
+        # TODO: Handle startup scripts
     fi
 
-    if [ -f ~/.bash_profile ]; then
-        mv ~/.bash_profile ~/.bash_profile.bak
-    fi
-
-    if [ -f ~/.profile ]; then
-        mv ~/.profile ~/.user-setup/profile-scripts/.profile-old
-    fi
-
-    cp "${SCRIPT_DIRECTORY}/templates/.bashrc.template" ~/.bashrc
-    cp "${SCRIPT_DIRECTORY}/templates/.bash_logout.template" ~/.bash_logout
-    cp "${SCRIPT_DIRECTORY}/templates/.profile.template" ~/.profile
-
-    git clone git://github.com/ohmybash/oh-my-bash.git ~/.user-setup/oh-my-bash
-
-    source ~/.profile
-
-    echo "Install complete"
 }
 
 perform_reinstall() {
@@ -86,29 +146,4 @@ perform_reinstall() {
     perform_install
 }
 
-if [ -d ~/.user-setup ]; then
-
-    userInputFinished=false
-
-    while [ "$userInputFinished" = false ]; do
-
-        printf "Scripts are already installed, would you like to uninstall(u/U), reinstall(r/R), or exit(n/N)?\nNote: This will remove ~/.user-setup and attempt to restore .bashrc and .bash_logout: "
-        read userResponse
-
-        if [ "$userResponse" = "r" ] || [ "$userResponse" = "R" ]; then
-            perform_reinstall
-            userInputFinished=true
-        elif [ "$userResponse" = "u" ] || [ "$userResponse" = "U" ]; then
-            perform_uninstall
-            userInputFinished=true
-        elif [ "$userResponse" = "n" ] || [ "$userResponse" = "N" ]; then
-            userInputFinished=true
-            exit 0
-        else
-            printf "\nUnrecognized input.\n\n"
-        fi
-
-    done
-else
-    perform_install
-fi
+perform_reinstall

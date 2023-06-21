@@ -1,6 +1,6 @@
 #!/bin/bash
 
-SCRIPT_DIRECTORY="$(readlink -e $(dirname ${BASH_SOURCE[0]}))"
+SCRIPT_DIRECTORY="$(readlink -e "$(dirname "${BASH_SOURCE[0]}")")"
 HOME_DIRECTORY="$(readlink -e ~)"
 
 if ! [ "$HOME_DIRECTORY" = "$SCRIPT_DIRECTORY" ]; then
