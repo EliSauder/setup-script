@@ -1,9 +1,9 @@
 #!/bin/bash
 
-source login
+source "$SCRIPT_DIRECTORY/sys_scripts/login"
 
-find ../user_scripts/ -name "*bash_login_pre" | xargs -0 source
+find "$SCRIPT_DIRECTORY/user_scripts/" -name "*bash_login_pre" -exec source {} \;
 
-find ../user_scripts/ -name "*bash_login" | xargs -0 source
+find "$SCRIPT_DIRECTORY/user_scripts/" -name "*bash_login" -exec source {} \;
 
-find ../user_scripts/ -name "*bash_login_post" | xargs -0 source
+find "$SCRIPT_DIRECTORY/user_scripts/" -name "*bash_login_post" -exec source {} \;

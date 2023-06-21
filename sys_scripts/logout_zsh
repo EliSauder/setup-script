@@ -1,9 +1,9 @@
 #!/bin/bash
 
-source logout
+source "$SCRIPT_DIRECTORY/sys_scripts/logout"
 
-find ../user_scripts/ -name "*zsh_logout_pre" | xargs -0 source
+find "$SCRIPT_DIRECTORY/user_scripts/" -name "*zsh_logout_pre" -exec source {} \;
 
-find ../user_scripts/ -name "*zsh_logout" | xargs -0 source
+find "$SCRIPT_DIRECTORY/user_scripts/" -name "*zsh_logout" -exec source {} \;
 
-find ../user_scripts/ -name "*zsh_logout_post" | xargs -0 source
+find "$SCRIPT_DIRECTORY/user_scripts/" -name "*zsh_logout_post" -exec source {} \;

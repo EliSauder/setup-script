@@ -27,6 +27,7 @@ perform_uninstall() {
         find "$HOME/.old_scripts" -name "z*" -mindepth 1 -delete
         if [ -z "$(ls -A "$HOME/.old_scripts")" ]; then
             rm -r "$HOME/.old_scripts"
+
         fi
     elif [[ $(detect_shell) = "bash" ]]; then
         rm "$HOME/.bashrc"
@@ -63,13 +64,13 @@ perform_install() {
 
     if [[ $(detect_shell) = "zsh" ]]; then
         mv "$HOME/.zshenv" "$HOME/.old_scripts/.zshenv" \
-            && echo "source \"$HOME/.old_scripts/.zshenv\"" > "$HOME/.zshenv"
+           && echo "source \"$HOME/.old_scripts/.zshenv\"" > "$HOME/.zshenv"
         mv "$HOME/.zprofile" "$HOME/.old_scripts/.zprofile" \
-            && echo "source \"$HOME/.old_scripts/.zprofile\"" > "$HOME/.zprofile"
+           && echo "source \"$HOME/.old_scripts/.zprofile\"" > "$HOME/.zprofile"
         mv "$HOME/.zshrc" "$HOME/.old_scripts/.zshrc" \
-            && echo "source \"$HOME/.old_scripts/.zshrc\"" > "$HOME/.zshrc"
+           && echo "source \"$HOME/.old_scripts/.zshrc\"" > "$HOME/.zshrc"
         mv "$HOME/.zlogout" "$HOME/.old_scripts/.zlogout" \
-            && echo "source \"$HOME/.old_scripts/.zlogout\"" > "$HOME/.zlogout"
+           && echo "source \"$HOME/.old_scripts/.zlogout\"" > "$HOME/.zlogout"
 
         mv "$HOME/.zlogin" "$HOME/.old_scripts/.zlogin"
         if [ ! -f "$HOME/.zprofile" ] && [ -f "$HOME/.old_scripts/.zlogin" ]; then
@@ -86,15 +87,27 @@ perform_install() {
         echo "source \"$SCRIPT_DIRECTORY/sys_scripts/interactive_zsh\"" >> "$HOME/.zshrc"
         echo "source \"$SCRIPT_DIRECTORY/sys_scripts/logout_zsh\"" >> "$HOME/.zlogout"
 
+	cat <(echo "SCRIPT_DIRECTORY=$SCRIPT_DIRECTORY") "$HOME/.zshenv" > "$HOME/.zshenv_tmp" \
+           && mv "$HOME/.zshenv_tmp" "$HOME/.zshenv"
+
+	cat <(echo "SCRIPT_DIRECTORY=$SCRIPT_DIRECTORY") "$HOME/.zprofile" > "$HOME/.zprofile_tmp" \
+           && mv "$HOME/.zprofile_tmp" "$HOME/.zprofile"
+
+	cat <(echo "SCRIPT_DIRECTORY=$SCRIPT_DIRECTORY") "$HOME/.zshrc" > "$HOME/.zshrc_tmp" \
+           && mv "$HOME/.zshrc_tmp" "$HOME/.zshrc"
+
+	cat <(echo "SCRIPT_DIRECTORY=$SCRIPT_DIRECTORY") "$HOME/.zlogout" > "$HOME/.zlogout_tmp" \
+           && mv "$HOME/.zlogout_tmp" "$HOME/.zlogout"
+
     elif [[ $(detect_shell) = "bash" ]]; then
         mv "$HOME/.bash_profile" "$HOME/.old_scripts/.bash_profile" \
-            && echo "source \"$HOME/.old_scripts/.bash_profile\"" > "$HOME/.bash_profile"
+           && echo "source \"$HOME/.old_scripts/.bash_profile\"" > "$HOME/.bash_profile"
         mv "$HOME/.bashrc" "$HOME/.old_scripts/.bashrc" \
-            && echo "source \"$HOME/.old_scripts/.bashrc\"" > "$HOME/.bashrc"
+           && echo "source \"$HOME/.old_scripts/.bashrc\"" > "$HOME/.bashrc"
         mv "$HOME/.profile" "$HOME/.old_scripts/.profile" \
-            && echo "source $HOME/.old_scripts/.profile"
+           && echo "source $HOME/.old_scripts/.profile"
         mv "$HOME/.bash_logout" "$HOME/.old_scripts/.bash_logout" \
-            && echo "source \"$HOME/.old_scripts/.bash_logout\"" > "$HOME/.bash_logout"
+           && echo "source \"$HOME/.old_scripts/.bash_logout\"" > "$HOME/.bash_logout"
 
         mv "$HOME/.bash_login" "$HOME/.old_scripts/.bash_login"
         if [ ! -f "$HOME/.bash_profile" ] && [ -f "$HOME/.old_scripts/.bash_login" ]; then
@@ -120,11 +133,25 @@ perform_install() {
         } >> "$HOME/.bashrc"
 
         echo "source \"$SCRIPT_DIRECTORY/sys_scripts/login_bash\"" >> "$HOME/.bash_profile"
+	echo "[[ $- = *i* ]] && source \"\$HOME/.bashrc\"" >> "$HOME/.bash_profile"
+
         echo "source \"$SCRIPT_DIRECTORY/sys_scripts/interactive_bash\"" >> "$HOME/.bashrc"
 
         echo "source \"$SCRIPT_DIRECTORY/sys_scripts/profile_bash\"" >> "$HOME/.profile"
+
         echo "source \"$SCRIPT_DIRECTORY/sys_scripts/logout_bash\"" >> "$HOME/.bash_logout"
 
+	cat <(echo "SCRIPT_DIRECTORY=$SCRIPT_DIRECTORY") "$HOME/.bash_profile" > "$HOME/.bash_profile_tmp" \
+           && mv "$HOME/.bash_profile_tmp" "$HOME/.bash_profile"
+
+	cat <(echo "SCRIPT_DIRECTORY=$SCRIPT_DIRECTORY") "$HOME/.bashrc" > "$HOME/.bashrc_tmp" \
+           && mv "$HOME/.bashrc_tmp" "$HOME/.bashrc"
+
+	cat <(echo "SCRIPT_DIRECTORY=$SCRIPT_DIRECTORY") "$HOME/.bash_logout" > "$HOME/.bash_logout_tmp" \
+           && mv "$HOME/.bash_logout_tmp" "$HOME/.bash_logout"
+
+	cat <(echo "SCRIPT_DIRECTORY=$SCRIPT_DIRECTORY") "$HOME/.profile" > "$HOME/.profile_tmp" \
+           && mv "$HOME/.profile_tmp" "$HOME/.profile"
     elif [[ $(detect_shell) = "fish" ]]; then
         echo "Unsupported"
         # TODO: Handle startup scripts

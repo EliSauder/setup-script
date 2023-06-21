@@ -1,14 +1,14 @@
 #!/bin/bash
 
 
-find ../user_scripts/ \( -name "*_logout_pre" \
-    -and -not -name "*zsh*" -and -not "*bash*" \
-    -and -not -name "*csh*" -and -not "*fish*" \) | xargs -0 source
+find "$SCRIPT_DIRECTORY/user_scripts/" \( -name "*_logout_pre" \
+    -and -not -name "*zsh*" -and -not -name "*bash*" \
+    -and -not -name "*csh*" -and -not -name "*fish*" \) -exec source {} \;
 
-find ../user_scripts/ \( -name "*_logout" \
-    -and -not -name "*zsh*" -and -not "*bash*" \
-    -and -not -name "*csh*" -and -not "*fish*" \) | xargs -0 source
+find "$SCRIPT_DIRECTORY/user_scripts/" \( -name "*_logout" \
+    -and -not -name "*zsh*" -and -not -name "*bash*" \
+    -and -not -name "*csh*" -and -not -name "*fish*" \) -exec source {} \;
 
-find ../user_scripts/ \( -name "*_logout_post" \
-    -and -not -name "*zsh*" -and -not "*bash*" \
-    -and -not -name "*csh*" -and -not "*fish*" \) | xargs -0 source
+find "$SCRIPT_DIRECTORY/user_scripts/" \( -name "*_logout_post" \
+    -and -not -name "*zsh*" -and -not -name "*bash*" \
+    -and -not -name "*csh*" -and -not -name "*fish*" \) -exec source {} \;
