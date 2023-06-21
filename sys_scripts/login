@@ -1,0 +1,13 @@
+#!/bin/bash
+
+find ../user_scripts/ \( -name "*_login_pre" \
+    -and -not -name "*zsh*" -and -not "*bash*" \
+    -and -not -name "*csh*" -and -not "*fish*" \) | xargs -0 source
+
+find ../user_scripts/ \( -name "*_login" \
+    -and -not -name "*zsh*" -and -not "*bash*" \
+    -and -not -name "*csh*" -and -not "*fish*" \) | xargs -0 source
+
+find ../user_scripts/ \( -name "*_login_post" \
+    -and -not -name "*zsh*" -and -not "*bash*" \
+    -and -not -name "*csh*" -and -not "*fish*" \) | xargs -0 source

@@ -1,0 +1,23 @@
+#!/bin/bash
+
+initialNvimSetup=false
+
+if ! [ -d "$HOME/.config/nvim" ]; then
+    initialNvimSetup=true
+elif ! git -C "$HOME/.config/nvim" status; then
+    initialNvimSetup=true
+fi
+
+if wget -q --spider http://google.com; then
+
+    if [[ $initialNvimSetup = true ]]; then
+        rm -r "$HOME/.config/nvim" >> /dev/null 2>&1
+        git -C "$HOME/.config" \
+            clone https://github.com/EliSauder/nvim-config.git nvim
+    else
+        git -C "$HOME/.config/nvim" checkout main
+        git -C "$HOME/.config/nvim" pull
+    fi
+else
+    echo "No internet, unable to update nvim config"
+fi

@@ -17,7 +17,7 @@ SCRIPT_DIRECTORY="$(readlink -e "$(dirname "${BASH_SOURCE[0]}")")"
 perform_uninstall() {
     echo "Starting uninstall"
 
-    if [[ $(detect_shell) == "zsh" ]]; then
+    if [[ $(detect_shell) = "zsh" ]]; then
         rm "$HOME/.zprofile"
         rm "$HOME/.zlogout"
         rm "$HOME/.zshrc"
@@ -28,7 +28,7 @@ perform_uninstall() {
         if [ -z "$(ls -A "$HOME/.old_scripts")" ]; then
             rm -r "$HOME/.old_scripts"
         fi
-    elif [[ $(detect_shell) == "bash" ]]; then
+    elif [[ $(detect_shell) = "bash" ]]; then
         rm "$HOME/.bashrc"
         rm "$HOME/.bash_profile"
         rm "$HOME/.bash_logout"
@@ -47,27 +47,17 @@ perform_uninstall() {
 perform_install() {
     echo "Starting install"
 
-    if [[ $OSTYPE == "darwin" ]] ; then
+    if [[ $OSTYPE = "darwin" ]] ; then
         source ./preinstall/mac
-    elif [[ $OSTYPE == "linux-gnu" ]] ; then
+    elif [[ $OSTYPE = "linux-gnu" ]] ; then
         source ./preinstall/linux
     fi
 
     hash -r
 
-    #    mkdir "$HOME/.user-setup"
-    #    mkdir "$HOME/.user-setup/scripts"
-    #
-    #    touch "$HOME/.user-setup/user-ssh-keys.txt"
-    #
-    #    find "$SCRIPT_DIRECTORY/user_scripts/" \
-        #        \(-iname -not "*_zsh*" -and -iname -not "*_bash*" \
-        #        -and -iname -not "*_fish*" -and -iname -not "*_csh*" \) \
-        #        | xargs -0 -I {} cp {} "$HOME/.user-setup/scripts"
-
     mkdir "$HOME/.old_scripts"
 
-    if [[ $(detect_shell) == "zsh" ]]; then
+    if [[ $(detect_shell) = "zsh" ]]; then
         mv "$HOME/.zshenv" "$HOME/.old_scripts/.zshenv" \
             && echo "source \"$HOME/.old_scripts/.zshenv\"" > "$HOME/.zshenv"
         mv "$HOME/.zprofile" "$HOME/.old_scripts/.zprofile" \
@@ -92,7 +82,7 @@ perform_install() {
         echo "source \"$SCRIPT_DIRECTORY/sys_scripts/interactive_zsh\"" >> "$HOME/.zshrc"
         echo "source \"$SCRIPT_DIRECTORY/sys_scripts/logout_zsh\"" >> "$HOME/.zlogout"
 
-    elif [[ $(detect_shell) == "bash" ]]; then
+    elif [[ $(detect_shell) = "bash" ]]; then
         mv "$HOME/.bash_profile" "$HOME/.old_scripts/.bash_profile" \
             && echo "source \"$HOME/.old_scripts/.bash_profile\"" > "$HOME/.bash_profile"
         mv "$HOME/.bashrc" "$HOME/.old_scripts/.bashrc" \
@@ -113,13 +103,13 @@ perform_install() {
         touch "$HOME/.profile"
 
         {
-            echo "if [[ -n \$USERSCRIPTS_ENV_LOADED ]] || [[ \$USERSCRIPTS_ENV_LOADED == 0 ]]; then"
+            echo "if [[ -n \$USERSCRIPTS_ENV_LOADED ]] || [[ \$USERSCRIPTS_ENV_LOADED = 0 ]]; then"
             echo "    source \"$SCRIPT_DIRECTORY/sys_scripts/env_bash\""
             echo "    USERSCRIPTS_ENV_LOADED=1"
             echo "fi"
         } >> "$HOME/.bash_profile"
         {
-            echo "if [[ -n \$USERSCRIPTS_ENV_LOADED ]] || [[ \$USERSCRIPTS_ENV_LOADED == 0 ]]; then"
+            echo "if [[ -n \$USERSCRIPTS_ENV_LOADED ]] || [[ \$USERSCRIPTS_ENV_LOADED = 0 ]]; then"
             echo "    source \"$SCRIPT_DIRECTORY/sys_scripts/env_bash\""
             echo "    USERSCRIPTS_ENV_LOADED=1"
             echo "fi"
@@ -131,10 +121,10 @@ perform_install() {
         echo "source \"$SCRIPT_DIRECTORY/sys_scripts/profile_bash\"" >> "$HOME/.profile"
         echo "source \"$SCRIPT_DIRECTORY/sys_scripts/logout_bash\"" >> "$HOME/.bash_logout"
 
-    elif [[ $(detect_shell) == "fish" ]]; then
+    elif [[ $(detect_shell) = "fish" ]]; then
         echo "Unsupported"
         # TODO: Handle startup scripts
-    elif [[ $(detect_shell) == "csh" ]]; then
+    elif [[ $(detect_shell) = "csh" ]]; then
         echo "Unsopported"
         # TODO: Handle startup scripts
     fi

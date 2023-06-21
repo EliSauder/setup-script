@@ -1,0 +1,9 @@
+#!/bin/bash
+
+source login
+
+find ../user_scripts/ -name "*zsh_login_pre" | xargs -0 source
+
+find ../user_scripts/ -name "*zsh_login" | xargs -0 source
+
+find ../user_scripts/ -name "*zsh_login_post" | xargs -0 source

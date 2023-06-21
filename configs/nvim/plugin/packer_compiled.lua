@@ -273,7 +273,7 @@ vim.cmd [[ packadd nvim-treesitter-context ]]
 time([[Sequenced loading]], false)
 
 _G._packer.inside_compile = false
-if _G._packer.needs_bufread == true then
+if _G._packer.needs_bufread = true then
   vim.cmd("doautocmd BufRead")
 end
 _G._packer.needs_bufread = false

@@ -1,0 +1,9 @@
+#!/bin/bash
+
+source interactive
+
+find ../user_scripts/ -name "*zsh_int_pre" | xargs -0 source
+
+find ../user_scripts/ -name "*zsh_int" | xargs -0 source
+
+find ../user_scripts/ -name "*zsh_int_post" | xargs -0 source

@@ -1,0 +1,57 @@
+#!/bin/bash
+
+mkcd () {
+	mkdir "$1" && cd "$1" || exit
+}
+
+cl() {
+	clear "$@"
+}
+
+nv() {
+    local dir="$1"
+    if ! [ -d "$1" ]; then
+        dir="$(dirname "$1")"
+    fi
+    cd "$dir" || exit
+    nvim "$@"
+}
+
+python() {
+    python3
+}
+
+pip() {
+    pip3
+}
+
+vim() {
+    nv "$@"
+}
+
+vi() {
+    nv "$@"
+}
+
+cds() {
+    cd ~/Documents/School || exit
+}
+
+cdsu() {
+    cd ~/Documents/School/UCI || exit
+}
+
+cdv() {
+    cd "$1" && nv .
+}
+
+gitco() {
+    local dest=${2:-"$(basename "$1" .git)"}
+    git clone "$1" "$dest" && cd  "$dest" || exit
+}
+
+gitcov() {
+    gitco "$1" "$2" && nv .
+}
+
+alias ls='ls -G'

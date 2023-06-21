@@ -1,0 +1,9 @@
+#!/bin/bash
+
+source env
+
+find ../user_scripts/ -name "*zsh_env_pre" | xargs -0 source
+
+find ../user_scripts/ -name "*zsh_env" | xargs -0 source
+
+find ../user_scripts/ -name "*zsh_env_post" | xargs -0 source
