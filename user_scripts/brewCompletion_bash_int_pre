@@ -1,7 +1,5 @@
 #!/bin/bash
 
-echo "brew loading bash"
-
 if type brew &>/dev/null
 then
   HOMEBREW_PREFIX="$(brew --prefix)"

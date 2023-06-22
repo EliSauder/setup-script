@@ -14,16 +14,17 @@ detect_shell() {
 
 SCRIPT_DIRECTORY="$(readlink -e "$(dirname "${BASH_SOURCE[0]}")")"
 perform_uninstall() {
+    if [[ -d "$HOME/.old_scripts" ]]; then
     echo "Starting uninstall"
-
+    
     if [[ $(detect_shell) = "zsh" ]]; then
         rm "$HOME/.zprofile"
         rm "$HOME/.zlogout"
         rm "$HOME/.zshrc"
         rm "$HOME/.zshenv"
 
-        cp "$HOME/.old_scripts/z*" "$HOME"
-        find "$HOME/.old_scripts" -name "z*" -mindepth 1 -delete
+        cp "$HOME/.old_scripts/.z*" "$HOME"
+        find "$HOME/.old_scripts" -name ".z*" -mindepth 1 -delete
         if [ -z "$(ls -A "$HOME/.old_scripts")" ]; then
             rm -r "$HOME/.old_scripts"
 
@@ -34,16 +35,17 @@ perform_uninstall() {
         rm "$HOME/.bash_logout"
         rm "$HOME/.profile"
 
-        cp "$HOME/.old_scripts/bash*" "$HOME" && cp "$HOME/.old_scripts/.profile" "$HOME"
-        find "$HOME/.old_scripts" -name "bash*" -mindepth 1 -delete
-        if [ -z "$(ls -A "$HOME/.old_scripts")" ]; then
-            rm -r "$HOME/.old_scripts"
-        fi
+        cp "$HOME/.old_scripts/.bash"* "$HOME"
+        cp "$HOME/.old_scripts/.profile" "$HOME"
+        rm -r "$HOME/.old_scripts"
     fi
 
     rm "$HOME/.mytheme.omp.json"
 
     echo "Finished uninstall"
+else
+    echo "Nothing to uninstall"
+    fi
 }
 
 perform_install() {
