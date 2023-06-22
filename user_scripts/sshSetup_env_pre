@@ -2,7 +2,7 @@
 
 SSH_ENV="$HOME/.ssh/.agent-environment"
 
-mkdir "$HOME/.ssh" 2>&1 /dev/null
+mkdir "$HOME/.ssh" >> /dev/null 2>&1 
 
 function start_agent {
     createNewAgent=false

@@ -2,18 +2,15 @@
 
 source "$SCRIPT_DIRECTORY/sys_scripts/interactive"
 
-find "$SCRIPT_DIRECTORY/user_scripts/" -name "*zsh_int_pre"  \
-    | while read -r file; do
-        source "$file"
-    done
+while read file; do
+    source "$file"
+done <<< "$(find "$SCRIPT_DIRECTORY/user_scripts/" -name "*zsh_int_pre"  )" pv
 
-find "$SCRIPT_DIRECTORY/user_scripts/" -name "*zsh_int"  \
-    | while read -r file; do
-        source "$file"
-    done
+while read file; do
+    source "$file"
+done <<< "$(find "$SCRIPT_DIRECTORY/user_scripts/" -name "*zsh_int"  )" pv
 
-find "$SCRIPT_DIRECTORY/user_scripts/" -name "*zsh_int_post"  \
-    | while read -r file; do
-        source "$file"
-    done
+while read file; do
+    source "$file"
+done <<< "$(find "$SCRIPT_DIRECTORY/user_scripts/" -name "*zsh_int_post"  )" pv
 

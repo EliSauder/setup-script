@@ -57,7 +57,7 @@ perform_install() {
 
     hash -r
 
-    cp "$SCRIPT_DIRECTORI/.mytheme.omp.json" "$HOME"
+    cp "$SCRIPT_DIRECTORY/.mytheme.omp.json" "$HOME/"
 
     mkdir "$HOME/.old_scripts"
 
@@ -119,13 +119,13 @@ perform_install() {
         touch "$HOME/.profile"
 
         {
-            echo "if [[ -n \$USERSCRIPTS_ENV_LOADED ]] || [[ \$USERSCRIPTS_ENV_LOADED = 0 ]]; then"
+            echo "if [[ -z \$USERSCRIPTS_ENV_LOADED ]] || [[ \$USERSCRIPTS_ENV_LOADED = 0 ]]; then"
             echo "    source \"$SCRIPT_DIRECTORY/sys_scripts/env_bash\""
             echo "    USERSCRIPTS_ENV_LOADED=1"
             echo "fi"
         } >> "$HOME/.bash_profile"
         {
-            echo "if [[ -n \$USERSCRIPTS_ENV_LOADED ]] || [[ \$USERSCRIPTS_ENV_LOADED = 0 ]]; then"
+            echo "if [[ -z \$USERSCRIPTS_ENV_LOADED ]] || [[ \$USERSCRIPTS_ENV_LOADED = 0 ]]; then"
             echo "    source \"$SCRIPT_DIRECTORY/sys_scripts/env_bash\""
             echo "    USERSCRIPTS_ENV_LOADED=1"
             echo "fi"

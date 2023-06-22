@@ -2,17 +2,14 @@
 
 source "$SCRIPT_DIRECTORY/sys_scripts/login"
 
-find "$SCRIPT_DIRECTORY/user_scripts/" -name "*bash_login_pre"  \
-    | while read -r file; do
-        source "$file"
-    done
+while read file; do
+    source "$file"
+done <<< "$(find "$SCRIPT_DIRECTORY/user_scripts/" -name "*bash_login_pre"  )"
 
-find "$SCRIPT_DIRECTORY/user_scripts/" -name "*bash_login"  \
-    | while read -r file; do
-        source "$file"
-    done
+while read file; do
+    source "$file"
+done <<< "$(find "$SCRIPT_DIRECTORY/user_scripts/" -name "*bash_login"  )"
 
-find "$SCRIPT_DIRECTORY/user_scripts/" -name "*bash_login_post"  \
-    | while read -r file; do
-        source "$file"
-    done
+while read file; do
+    source "$file"
+done <<< "$(find "$SCRIPT_DIRECTORY/user_scripts/" -name "*bash_login_post"  )"

@@ -2,7 +2,7 @@
 
 add_ssh_keys() {
     find "$HOME/.ssh" -type f \( -not -name "*known_hosts*" -and -not -name "*pub" \
-        -and -not -name "*config*" -and -not -name ".agent-environment" \) \
+        -and -not -name "*config*" -and -not -name "agent.env" -and -not -name ".agent-environment" \) \
         -exec ssh-add {} \;
 }
 

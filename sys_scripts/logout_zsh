@@ -2,17 +2,14 @@
 
 source "$SCRIPT_DIRECTORY/sys_scripts/logout"
 
-find "$SCRIPT_DIRECTORY/user_scripts/" -name "*zsh_logout_pre"  \
-    | while read -r file; do
-        source "$file"
-    done
+while read file; do
+    source "$file"
+done <<< "$(find "$SCRIPT_DIRECTORY/user_scripts/" -name "*zsh_logout_pre"  )" pv
 
-find "$SCRIPT_DIRECTORY/user_scripts/" -name "*zsh_logout"  \
-    | while read -r file; do
-        source "$file"
-    done
+while read file; do
+    source "$file"
+done <<< "$(find "$SCRIPT_DIRECTORY/user_scripts/" -name "*zsh_logout"  )" pv
 
-find "$SCRIPT_DIRECTORY/user_scripts/" -name "*zsh_logout_post"  \
-    | while read -r file; do
-        source "$file"
-    done
+while read file; do
+    source "$file"
+done <<< "$(find "$SCRIPT_DIRECTORY/user_scripts/" -name "*zsh_logout_post"  )" pv

@@ -1,23 +1,20 @@
 #!/bin/bash
 
 
-find "$SCRIPT_DIRECTORY/user_scripts/" \( -name "*_logout_pre" \
+while read file; do
+    source "$file"
+done <<< "$(find "$SCRIPT_DIRECTORY/user_scripts/" \( -name "*_logout_pre" \
     -and -not -name "*zsh*" -and -not -name "*bash*" \
-    -and -not -name "*csh*" -and -not -name "*fish*" \)  \
-    | while read -r file; do
-        source "$file"
-    done
+    -and -not -name "*csh*" -and -not -name "*fish*" \)  )" pv
 
-find "$SCRIPT_DIRECTORY/user_scripts/" \( -name "*_logout" \
+while read file; do
+    source "$file"
+done <<< "$(find "$SCRIPT_DIRECTORY/user_scripts/" \( -name "*_logout" \
     -and -not -name "*zsh*" -and -not -name "*bash*" \
-    -and -not -name "*csh*" -and -not -name "*fish*" \)  \
-    | while read -r file; do
-        source "$file"
-    done
+    -and -not -name "*csh*" -and -not -name "*fish*" \)  )" pv
 
-find "$SCRIPT_DIRECTORY/user_scripts/" \( -name "*_logout_post" \
+while read file; do
+    source "$file"
+done <<< "$(find "$SCRIPT_DIRECTORY/user_scripts/" \( -name "*_logout_post" \
     -and -not -name "*zsh*" -and -not -name "*bash*" \
-    -and -not -name "*csh*" -and -not -name "*fish*" \)  \
-    | while read -r file; do
-        source "$file"
-    done
+    -and -not -name "*csh*" -and -not -name "*fish*" \)  )" pv

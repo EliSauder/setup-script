@@ -1,22 +1,19 @@
 #!/bin/bash
 
-find "$SCRIPT_DIRECTORY/user_scripts/" \( -name "*_int_pre" \
+while read file; do
+    source "$file"
+done <<< "$(find "$SCRIPT_DIRECTORY/user_scripts/" \( -name "*_int_pre" \
     -and -not -name "*zsh*" -and -not -name "*bash*" \
-    -and -not -name "*csh*" -and -not -name "*fish*" \)  \
-    | while read -r file; do
-        source "$file"
-    done
+    -and -not -name "*csh*" -and -not -name "*fish*" \)  )"
 
-find "$SCRIPT_DIRECTORY/user_scripts/" \( -name "*_int" \
+while read file; do
+    source "$file"
+done <<< "$(find "$SCRIPT_DIRECTORY/user_scripts/" \( -name "*_int" \
     -and -not -name "*zsh*" -and -not -name "*bash*" \
-    -and -not -name "*csh*" -and -not -name "*fish*" \)  \
-    | while read -r file; do
-        source "$file"
-    done
+    -and -not -name "*csh*" -and -not -name "*fish*" \)  )"
 
-find "$SCRIPT_DIRECTORY/user_scripts/" \( -name "*_int_post" \
+while read file; do
+    source "$file"
+done <<< "$(find "$SCRIPT_DIRECTORY/user_scripts/" \( -name "*_int_post" \
     -and -not -name "*zsh*" -and -not -name "*bash*" \
-    -and -not -name "*csh*" -and -not -name "*fish*" \)  \
-    | while read -r file; do
-        source "$file"
-    done
+    -and -not -name "*csh*" -and -not -name "*fish*" \)  )"

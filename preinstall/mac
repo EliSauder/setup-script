@@ -13,6 +13,7 @@ else
 fi
 
 # Install Packages
+brew install shellcheck
 brew install jandedobbeleer/oh-my-posh/oh-my-posh
 brew install llvm
 brew install bash-language-server
@@ -55,7 +56,7 @@ curl -L https://iterm2.com/shell_integration/install_shell_integration.sh | bash
 npm install --save-dev @commitlint/{cli,config-conventional}
 npm audit fix
 
-oh-my-posh install font CascadiaCode
+sudo oh-my-posh install font CascadiaCode
 
 rustup update
 

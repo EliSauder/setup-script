@@ -56,4 +56,4 @@ gitcov() {
     gitco "$1" "$2" && nv .
 }
 
-alias ls='ls -G'
+alias ls='ls -G --color'
