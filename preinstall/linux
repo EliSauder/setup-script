@@ -1,0 +1,30 @@
+#!/bin/bash
+
+if [[ $(which apt-get) ]]; then
+    sudo add-apt-repository ppa:neovim-ppa/unstable
+
+    sudo apt update
+    
+    sudo apt install llvm build-essential python3 dotnet-sdk-7.0 dotnet7 \
+        cmake clang-format git docker nodejs neovim tree unzip gcc
+
+    sudo apt autoremove
+
+fi
+
+[[ -f /home/linuxbrew/.linuxbrew/bin/brew ]] || \
+    NONINTERACTIVE=1 /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
+eval "$(/home/linuxbrew/.linuxbrew/bin/brew shellenv)"
+
+brew update
+brew install jandedobbeleer/oh-my-posh/oh-my-posh
+
+oh-my-posh font install CascadiaCode
+
+npm install --save-dev @commitlint/{cli,config-conventional}
+npm audit fix
+
+[[ $(which rustup) ]] || \
+    curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh
+
+rustup update 

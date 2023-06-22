@@ -14,6 +14,8 @@ if wget -q --spider http://google.com; then
         rm -r "$HOME/.config/nvim" >> /dev/null 2>&1
         git -C "$HOME/.config" \
             clone https://github.com/EliSauder/nvim-config.git nvim
+	git clone --depth 1 https://github.com/wbthomason/packer.nvim \
+            "$HOME/.local/share/nvim/site/pack/packer/start/packer.nvim"
     else
         git -C "$HOME/.config/nvim" checkout main
         git -C "$HOME/.config/nvim" pull
