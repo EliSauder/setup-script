@@ -1,14 +1,22 @@
 #!/bin/bash
 
-echo "loading user scripts for interactive"
 find "$SCRIPT_DIRECTORY/user_scripts/" \( -name "*_int_pre" \
     -and -not -name "*zsh*" -and -not -name "*bash*" \
-    -and -not -name "*csh*" -and -not -name "*fish*" \) -exec source {} \;
+    -and -not -name "*csh*" -and -not -name "*fish*" \)  \
+    | while read -r file; do
+        source "$file"
+    done
 
 find "$SCRIPT_DIRECTORY/user_scripts/" \( -name "*_int" \
     -and -not -name "*zsh*" -and -not -name "*bash*" \
-    -and -not -name "*csh*" -and -not -name "*fish*" \) -exec source {} \;
+    -and -not -name "*csh*" -and -not -name "*fish*" \)  \
+    | while read -r file; do
+        source "$file"
+    done
 
 find "$SCRIPT_DIRECTORY/user_scripts/" \( -name "*_int_post" \
     -and -not -name "*zsh*" -and -not -name "*bash*" \
-    -and -not -name "*csh*" -and -not -name "*fish*" \) -exec source {} \;
+    -and -not -name "*csh*" -and -not -name "*fish*" \)  \
+    | while read -r file; do
+        source "$file"
+    done

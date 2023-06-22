@@ -2,8 +2,17 @@
 
 source "$SCRIPT_DIRECTORY/sys_scripts/env"
 
-find "$SCRIPT_DIRECTORY/user_scripts/" -name "*bash_env_pre" -exec source {} \;
+find "$SCRIPT_DIRECTORY/user_scripts/" -name "*bash_env_pre"  \
+    | while read -r file; do
+        source "$file"
+    done
 
-find "$SCRIPT_DIRECTORY/user_scripts/" -name "*bash_env" -exec source {} \;
+find "$SCRIPT_DIRECTORY/user_scripts/" -name "*bash_env"  \
+    | while read -r file; do
+        source "$file"
+    done
 
-find "$SCRIPT_DIRECTORY/user_scripts/" -name "*bash_env_post" -exec source {} \;
+find "$SCRIPT_DIRECTORY/user_scripts/" -name "*bash_env_post"  \
+    | while read -r file; do
+        source "$file"
+    done

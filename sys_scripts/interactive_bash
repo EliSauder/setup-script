@@ -2,8 +2,18 @@
 
 source "$SCRIPT_DIRECTORY/sys_scripts/interactive"
 
-find "$SCRIPT_DIRECTORY/user_scripts/" -name "*bash_int_pre" -exec source {} \;
+find "$SCRIPT_DIRECTORY/user_scripts/" -name "*bash_int_pre"  \
+    | while read -r file; do
+	echo "$file"
+        source "$file"
+    done
 
-find "$SCRIPT_DIRECTORY/user_scripts/" -name "*bash_int" -exec source {} \;
+find "$SCRIPT_DIRECTORY/user_scripts/" -name "*bash_int"  \
+    | while read -r file; do
+        source "$file"
+    done
 
-find "$SCRIPT_DIRECTORY/user_scripts/" -name "*bash_int_post" -exec source {} \;
+find "$SCRIPT_DIRECTORY/user_scripts/" -name "*bash_int_post"  \
+    | while read -r file; do
+        source "$file"
+    done

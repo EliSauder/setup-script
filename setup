@@ -133,7 +133,7 @@ perform_install() {
         } >> "$HOME/.bashrc"
 
         echo "source \"$SCRIPT_DIRECTORY/sys_scripts/login_bash\"" >> "$HOME/.bash_profile"
-	echo "[[ $- = *i* ]] && source \"\$HOME/.bashrc\"" >> "$HOME/.bash_profile"
+	echo "[[ \$- = *i* ]] && source \"\$HOME/.bashrc\"" >> "$HOME/.bash_profile"
 
         echo "source \"$SCRIPT_DIRECTORY/sys_scripts/interactive_bash\"" >> "$HOME/.bashrc"
 

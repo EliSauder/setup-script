@@ -2,8 +2,17 @@
 
 source "$SCRIPT_DIRECTORY/sys_scripts/logout"
 
-find "$SCRIPT_DIRECTORY/user_scripts/" -name "*zsh_logout_pre" -exec source {} \;
+find "$SCRIPT_DIRECTORY/user_scripts/" -name "*zsh_logout_pre"  \
+    | while read -r file; do
+        source "$file"
+    done
 
-find "$SCRIPT_DIRECTORY/user_scripts/" -name "*zsh_logout" -exec source {} \;
+find "$SCRIPT_DIRECTORY/user_scripts/" -name "*zsh_logout"  \
+    | while read -r file; do
+        source "$file"
+    done
 
-find "$SCRIPT_DIRECTORY/user_scripts/" -name "*zsh_logout_post" -exec source {} \;
+find "$SCRIPT_DIRECTORY/user_scripts/" -name "*zsh_logout_post"  \
+    | while read -r file; do
+        source "$file"
+    done

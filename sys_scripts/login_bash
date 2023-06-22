@@ -2,8 +2,17 @@
 
 source "$SCRIPT_DIRECTORY/sys_scripts/login"
 
-find "$SCRIPT_DIRECTORY/user_scripts/" -name "*bash_login_pre" -exec source {} \;
+find "$SCRIPT_DIRECTORY/user_scripts/" -name "*bash_login_pre"  \
+    | while read -r file; do
+        source "$file"
+    done
 
-find "$SCRIPT_DIRECTORY/user_scripts/" -name "*bash_login" -exec source {} \;
+find "$SCRIPT_DIRECTORY/user_scripts/" -name "*bash_login"  \
+    | while read -r file; do
+        source "$file"
+    done
 
-find "$SCRIPT_DIRECTORY/user_scripts/" -name "*bash_login_post" -exec source {} \;
+find "$SCRIPT_DIRECTORY/user_scripts/" -name "*bash_login_post"  \
+    | while read -r file; do
+        source "$file"
+    done

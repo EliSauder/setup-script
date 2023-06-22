@@ -3,12 +3,21 @@
 
 find "$SCRIPT_DIRECTORY/user_scripts/" \( -name "*_logout_pre" \
     -and -not -name "*zsh*" -and -not -name "*bash*" \
-    -and -not -name "*csh*" -and -not -name "*fish*" \) -exec source {} \;
+    -and -not -name "*csh*" -and -not -name "*fish*" \)  \
+    | while read -r file; do
+        source "$file"
+    done
 
 find "$SCRIPT_DIRECTORY/user_scripts/" \( -name "*_logout" \
     -and -not -name "*zsh*" -and -not -name "*bash*" \
-    -and -not -name "*csh*" -and -not -name "*fish*" \) -exec source {} \;
+    -and -not -name "*csh*" -and -not -name "*fish*" \)  \
+    | while read -r file; do
+        source "$file"
+    done
 
 find "$SCRIPT_DIRECTORY/user_scripts/" \( -name "*_logout_post" \
     -and -not -name "*zsh*" -and -not -name "*bash*" \
-    -and -not -name "*csh*" -and -not -name "*fish*" \) -exec source {} \;
+    -and -not -name "*csh*" -and -not -name "*fish*" \)  \
+    | while read -r file; do
+        source "$file"
+    done
