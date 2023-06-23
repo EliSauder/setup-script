@@ -59,7 +59,9 @@ perform_install() {
 
     hash -r
 
-    cp "$SCRIPT_DIRECTORY/.mytheme.omp.json" "$HOME/"
+    cp "$SCRIPT_DIRECTORY/config/.mytheme.omp.json" "$HOME/"
+    cp "$SCRIPT_DIRECTORY/config/clang-format.template" "$HOME/"
+    mv "$HOME/clang-format.template" "$HOME/.clang-format"
 
     mkdir "$HOME/.old_scripts"
 

@@ -1,5 +1,0 @@
-#!/bin/bash
-HISTCONTROL=ignoredups:erasedups
-HISTIGNORE=
-
-unset uninstall_oh_my_bash
