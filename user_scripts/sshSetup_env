@@ -1,9 +1,27 @@
 #!/bin/bash
 
-add_ssh_keys() {
-    find "$HOME/.ssh" -type f \( -not -name "*known_hosts*" -and -not -name "*pub" \
-        -and -not -name "*config*" -and -not -name "agent.env" -and -not -name ".agent-environment" \) \
-        -exec ssh-add {} \;
+SSH_ENV="$HOME/.ssh/.agent-environment"
+
+mkdir "$HOME/.ssh" >> /dev/null 2>&1 
+
+function start_agent {
+    createNewAgent=false
+
+    if [ -f "$SSH_ENV" ]; then
+        . "$SSH_ENV" > /dev/null 2>&1
+
+        pgrep ssh-agent | grep "$SSH_AGENT_PID" > /dev/null 2>&1 || {
+            createNewAgent=true;
+        }
+    else
+        createNewAgent=true;
+    fi
+
+    if [[ $createNewAgent = true ]]; then
+        ssh-agent -s | sed 's/^echo/#echo/' > "$SSH_ENV"
+        chmod 600 "$SSH_ENV"
+        . "$SSH_ENV" > /dev/null 2>&1
+    fi
 }
 
-add_ssh_keys
+start_agent

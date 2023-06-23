@@ -1,0 +1,10 @@
+#!/bin/bash
+echo "Adding SSH keys"
+echo "$(tty)"
+for file in $(find "$HOME/.ssh" -type f \( -not -name "*known_hosts*" \
+        -and -not -name "*pub" -and -not -name "*config*" -and -not -name "agent.env" \
+        -and -not -name ".agent-environment" \) -print0 ); do
+    ssh-add "$file"
+    done
+
+echo "Done Adding SSH keys"

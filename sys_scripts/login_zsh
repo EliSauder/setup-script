@@ -2,14 +2,14 @@
 
 source "$SCRIPT_DIRECTORY/sys_scripts/login"
 
-while read file; do
+for file in $(find "$SCRIPT_DIRECTORY/user_scripts/" -name "*zsh_login_pre"  -print ); do
     source "$file"
-done <<< "$(find "$SCRIPT_DIRECTORY/user_scripts/" -name "*zsh_login_pre"  )" pv
+done 
 
-while read file; do
+for file in $(find "$SCRIPT_DIRECTORY/user_scripts/" -name "*zsh_login"  -print ); do
     source "$file"
-done <<< "$(find "$SCRIPT_DIRECTORY/user_scripts/" -name "*zsh_login"  )" pv
+done 
 
-while read file; do
+for file in $(find "$SCRIPT_DIRECTORY/user_scripts/" -name "*zsh_login_post"  -print ); do
     source "$file"
-done <<< "$(find "$SCRIPT_DIRECTORY/user_scripts/" -name "*zsh_login_post"  )" pv
+done 

@@ -1,7 +1,5 @@
 #!/bin/bash
 
-unset SSH_ASKPASS
-
 if [ -d /usr/local/bin ]; then
     export PATH=/usr/local/bin:$PATH
 fi

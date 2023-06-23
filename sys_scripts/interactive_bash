@@ -2,14 +2,14 @@
 
 source "$SCRIPT_DIRECTORY/sys_scripts/interactive"
 
-while read file; do
+for file in $(find "$SCRIPT_DIRECTORY/user_scripts/" -name "*bash_int_pre"-print ); do
     source "$file"
-done <<< "$(find "$SCRIPT_DIRECTORY/user_scripts/" -name "*bash_int_pre")" 
+done 
 
-while read file; do
+for file in $(find "$SCRIPT_DIRECTORY/user_scripts/" -name "*bash_int"  -print ); do
     source "$file"
-done <<< "$(find "$SCRIPT_DIRECTORY/user_scripts/" -name "*bash_int"  )"
+done
 
-while read file; do
+for file in $(find "$SCRIPT_DIRECTORY/user_scripts/" -name "*bash_int_post"  -print ); do
     source "$file"
-done <<< "$(find "$SCRIPT_DIRECTORY/user_scripts/" -name "*bash_int_post"  )"
+done

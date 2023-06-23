@@ -2,14 +2,14 @@
 
 source "$SCRIPT_DIRECTORY/sys_scripts/env"
 
-while read file; do
+for file in $(find "$SCRIPT_DIRECTORY/user_scripts/" -name "*bash_env_pre"  -print ); do
     source "$file"
-done <<< "$(find "$SCRIPT_DIRECTORY/user_scripts/" -name "*bash_env_pre"  )"
+done
 
-while read file; do
+for file in $(find "$SCRIPT_DIRECTORY/user_scripts/" -name "*bash_env"  -print ); do
     source "$file"
-done <<< "$(find "$SCRIPT_DIRECTORY/user_scripts/" -name "*bash_env"  )"
+done
 
-while read file; do
+for file in $(find "$SCRIPT_DIRECTORY/user_scripts/" -name "*bash_env_post"  -print ); do
     source "$file"
-done <<< "$(find "$SCRIPT_DIRECTORY/user_scripts/" -name "*bash_env_post"  )"
+done

@@ -1,19 +1,19 @@
 #!/bin/bash
 
-while read file; do
-    source "$file"
-done <<< "$(find "$SCRIPT_DIRECTORY/user_scripts/" \( -name "*_login_pre" \
+for file in $(find "$SCRIPT_DIRECTORY/user_scripts/" \( -name "*_login_pre" \
     -and -not -name "*zsh*" -and -not -name "*bash*" \
-    -and -not -name "*csh*" -and -not -name "*fish*" \)  )"
+    -and -not -name "*csh*" -and -not -name "*fish*" \)  -print ); do
+    source "$file"
+done
 
-while read file; do
-    source "$file"
-done <<< "$(find "$SCRIPT_DIRECTORY/user_scripts/" \( -name "*_login" \
+for file in $(find "$SCRIPT_DIRECTORY/user_scripts/" \( -name "*_login" \
     -and -not -name "*zsh*" -and -not -name "*bash*" \
-    -and -not -name "*csh*" -and -not -name "*fish*" \)  )"
+    -and -not -name "*csh*" -and -not -name "*fish*" \)  -print ); do
+    source "$file"
+done
 
-while read file; do
-    source "$file"
-done <<< "$(find "$SCRIPT_DIRECTORY/user_scripts/" \( -name "*_login_post" \
+for file in $(find "$SCRIPT_DIRECTORY/user_scripts/" \( -name "*_login_post" \
     -and -not -name "*zsh*" -and -not -name "*bash*" \
-    -and -not -name "*csh*" -and -not -name "*fish*" \)  )"
+    -and -not -name "*csh*" -and -not -name "*fish*" \)  -print ); do
+    source "$file"
+done
