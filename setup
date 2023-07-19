@@ -41,6 +41,7 @@ perform_uninstall() {
     fi
 
     rm "$HOME/.mytheme.omp.json"
+    rm "$HOME/.clang-format"
 
     echo "Finished uninstall"
 else
@@ -59,8 +60,8 @@ perform_install() {
 
     hash -r
 
-    cp "$SCRIPT_DIRECTORY/config/.mytheme.omp.json" "$HOME/"
-    cp "$SCRIPT_DIRECTORY/config/clang-format.template" "$HOME/"
+    cp "$SCRIPT_DIRECTORY/configs/.mytheme.omp.json" "$HOME/"
+    cp "$SCRIPT_DIRECTORY/configs/clang-format.template" "$HOME/"
     mv "$HOME/clang-format.template" "$HOME/.clang-format"
 
     mkdir "$HOME/.old_scripts"

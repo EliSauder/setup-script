@@ -5,7 +5,8 @@ if [[ $(which apt-get) ]]; then
     
     sudo apt install llvm build-essential python3 dotnet-sdk-7.0 dotnet7 \
         cmake clang-format git docker nodejs tree unzip gcc shellcheck \
-        luarocks python3-venv
+        luarocks python3-venv ssh-askpass composer ruby java-common \
+        openjdk-19-sdk ripgrep
 
     sudo apt autoremove
 
