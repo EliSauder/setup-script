@@ -17,22 +17,6 @@ nv() {
     nvim "$@"
 }
 
-python() {
-    python3
-}
-
-pip() {
-    pip3
-}
-
-vim() {
-    nv "$@"
-}
-
-vi() {
-    nv "$@"
-}
-
 cds() {
     cd ~/Documents/School || exit
 }
